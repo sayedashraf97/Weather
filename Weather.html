@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+<style>
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container-fluid {
+    width: 400px;
+    margin: 50px auto;
+    padding: 10px;
+}
+
+.inputs {
+    padding: 2rem 0 2rem 0;
+    justify-content: center;
+    text-align: center;
+    background-color: #f9f9f9; /* Light gray background for better contrast */
+}
+
+.inputs input[type='text'] {
+    height: 3rem;
+    width: 20rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    padding: 10px;
+    border: none;
+    background-color: #ecf0f1; /* Light blue background for input */
+    border: 2px solid #3498db; /* Border color for better contrast */
+    border-radius: 2px;
+    margin-right: 4px;
+}
+
+.inputs input[type='submit'] {
+    height: 3.2rem;
+    width: 6.5rem;
+    background-color: #2ecc71; /* Green submit button for contrast */
+    font-weight: bold;
+    color: white;
+    font-size: 1.2rem;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+.display {
+    color: #2c3e50;
+    width: 400px;
+    text-align: center;
+}
+
+.wrapper {
+    background-color: #ecf0f1;
+    height: 45vh;
+    margin: 50px auto;
+    border-radius: 2px;
+}
+
+.wrapper h2 {
+    padding: 5px 0;
+    text-align: center;
+    background-color: #e74c3c;
+    color: white;
+    font-family: 'Arial', sans-serif; /* Use a more common font */
+}
+
+.wrapper p {
+    margin: 20px 50px;
+    text-align: center;
+    color: #34495e;
+    font-size: 23px;
+}
+
+.wrapper p span {
+    color: #3498db;
+    font-size: 25px;
+}
+
+.wrapper h2 span {
+    font-size: 26px;
+    color: #ecf0f1;
+}
+
+</style>
+</head>
+<body>
+    <!-- a container div with the class container-fluid. It has a fixed width, margin, and padding adjustments for styling. -->
+    <div class="container-fluid">
+        <!-- Inside the container, there are two main sections: .main (empty) and .inputs. -->
+        <section class="main">
+
+        </section>
+        <!-- The .inputs section contains an input field for the city (#cityinput) and a submit button (#add). Below it is a .display section with a .wrapper div inside. -->
+        <section class="inputs">
+            <input type="text" placeholder="Enter any city..." id="cityinput">
+            <input type="submit" value="submit" id="add">
+            <!-- <button type="Submit" id="add"></button> -->
+            <!-- The .wrapper div is designed to display weather information. It has a red background header (h2) and paragraphs (p) for description, temperature, and wind speed. -->
+            <section class="display">
+                <div class="wrapper">
+                    <h2 id="cityoutput"></h2>
+                    <p id="description"></p>
+                    <p id="temp"></p>
+                    <p id="wind"></p>
+
+                </div>
+
+            </section>
+
+        </section>
+        <!-- <p id="error-message" style="color: red;"></p> -->
+
+         
+    </div>
+    <script>
+        // Variables are defined for various HTML elements using document.querySelector.
+        // inputval for the city input field.
+const inputval = document.querySelector('#cityinput');
+// city, description, temperature, wind for displaying weather information.
+const city = document.querySelector('#cityoutput');
+const description = document.querySelector('#description');
+const temperature = document.querySelector('#temp');
+const wind = document.querySelector('#wind');
+const errorMessage = document.querySelector('#error-message');
+// btn for the submit button.
+const btn = document.querySelector('#add');
+// apik for the OpenWeatherMap API key.
+const apik = '3045dd712ffe6e702e3245525ac7fa38';
+// The conversion function is defined to convert temperature from Kelvin to Celsius.
+function conversion(val) {
+    return (val - 273).toFixed(2);
+}
+// An event listener is added to the submit button (#add).
+// When the button is clicked:
+btn.addEventListener('click', function () {
+    // A fetch request is made to the OpenWeatherMap API using the city input and API key.
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${inputval.value}&appid=${apik}`)
+    // The response is processed using res.json().
+
+        .then(res => res.json())
+        // If successful, it updates the HTML content of elements like #cityoutput, #description, #temp, and #wind with relevant weather information.
+        .then(data => {
+            var nameval = data['name'];
+            var descrip = data['weather']['0']['description'];
+            var temp = data['main']['temp'];
+            var wndspd = data['wind']['speed'];
+            city.innerHTML = `Weather of <span>${nameval}</span>`;
+            temperature.innerHTML = `Temperature:<span>${conversion(temp)}</span>`;
+            description.innerHTML = `Sky Conditions:<span>${descrip}</span>`;
+            wind.innerHTML = `Wind Speed:<span>${wndspd}</span>`;
+            // errorMessage.textContent = ''; // Clear previous error messages
+        })
+        
+
+        // If there's an error (e.g., wrong city name), it displays an alert saying "You entered the wrong city name."
+        .catch(err=>alert('You entered wrong city name'))
+
+});
+
+
+    </script>
+</body>
+</html>
